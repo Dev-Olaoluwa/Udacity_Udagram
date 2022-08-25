@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
-
+import { Router, Request, Response } from 'express';
 (async () => {
 
   // Init the Express application
@@ -26,16 +26,16 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-  app.get("/filteredimage", async (req, res) => {
+  app.get("/filteredimage", async (req:express.Request, res:express.Response) => {
     try {
       //get the image from the query
-      let imageUrl = req.query.image_url;
+      const {imageUrl} : {imageUrl: string} = req.query.image_url;
       //validate the image
       if(!imageUrl){
         throw new Error("Please add an image")
       }
       //filter the image
-      const filteredPath = await filterImageFromURL(imageUrl)
+      const filteredPath : string = await filterImageFromURL(imageUrl)
       //send path to response
       res.status(200).sendFile(filteredPath)
       //delete files from the server
